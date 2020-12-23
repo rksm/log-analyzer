@@ -6,15 +6,14 @@ use std::{fmt::Debug, fs::read_dir, fs::read_to_string, fs::DirEntry, path::Path
 
 use crate::stats::Request;
 
-const LOG_DIR: &str = "/Users/robert/projects/lively/chm/2020-12-22-logs/";
-
-pub fn find_log_files() -> Vec<PathBuf> {
-    let dir = read_dir(LOG_DIR).expect("read log dir");
+pub fn find_log_files<P: AsRef<Path> + Debug>(dir: P) -> Vec<PathBuf> {
+    let dir = read_dir(dir).expect("read log dir");
     let mut files: Vec<DirEntry> = dir
         .into_iter()
         .filter_map(|ea| ea.ok())
         .filter(|file| {
-            return file.file_name().to_string_lossy().starts_with("access.log");
+            let name = file.file_name().to_string_lossy().to_string();
+            name.starts_with("access.log") && !name.ends_with(".gz")
         })
         .collect();
 
@@ -57,7 +56,7 @@ fn parse_log_file<P: AsRef<Path> + Debug>(
                     .uri()
                     .path_and_query()
                     .map(|p| {
-                        p.path().ends_with(".html")
+                        (p.path().ends_with(".html") || p.path() == "/")
                             && !p.path().starts_with("/PartsBin/")
                             && !p.path().starts_with("/proxy/")
                     })

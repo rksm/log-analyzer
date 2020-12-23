@@ -10,6 +10,7 @@ pub struct Options {
     pub log_dir: PathBuf,
     pub start_date: DateTime<FixedOffset>,
     pub by_day_chart_file: Option<PathBuf>,
+    pub repeat_mins: Option<u64>,
 }
 
 pub fn parse_args() -> Result<Options> {
@@ -28,6 +29,12 @@ pub fn parse_args() -> Result<Options> {
         "FILE.svg",
     );
     opts.optopt("", "start-date", "date to start from", "2020-12-23");
+    opts.optopt(
+        "",
+        "repeat",
+        "if specified, will run in a loop, number of minutes",
+        "60",
+    );
 
     match opts.parse(&args) {
         Err(_) => {
@@ -50,11 +57,14 @@ pub fn parse_args() -> Result<Options> {
 
             let by_day_chart_file = parsed.opt_str("by-day-chart").map(PathBuf::from);
 
+            let repeat_mins = parsed.opt_get("repeat").unwrap();
+
             Ok(Options {
                 stats_file,
                 log_dir,
                 start_date,
                 by_day_chart_file,
+                repeat_mins,
             })
         }
     }

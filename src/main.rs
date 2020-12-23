@@ -8,9 +8,10 @@ use std::path::Path;
 
 use chrono::{DateTime, FixedOffset};
 use error::Result;
-use options::parse_args;
+use options::{parse_args, Options};
 use parser::{find_log_files, parse_log_files};
 use stats::RequestStats;
+use std::thread::sleep;
 use viz::draw_pictures;
 
 fn print_stats(stats: &RequestStats) {
@@ -50,15 +51,13 @@ fn main2() {
     println!("{:#?}", dt);
 }
 
-fn main() -> Result<()> {
-    let opts = parse_args()?;
-
+fn run(opts: &Options) {
     // read existing stats
     println!("Reading stats from {:?}", opts.stats_file);
     let mut stats = read_stats(&opts.stats_file);
 
     // find the log files
-    let files = find_log_files();
+    let files = find_log_files(&opts.log_dir);
 
     // read from the log files up to what we read before (according to the last
     // timestamp)
@@ -88,9 +87,24 @@ fn main() -> Result<()> {
     // print the stats
     print_stats(&stats);
 
-    if let Some(chart_file) = opts.by_day_chart_file {
+    if let Some(chart_file) = &opts.by_day_chart_file {
         draw_pictures(chart_file, &stats);
     }
+}
 
+fn main() -> Result<()> {
+    let opts = parse_args()?;
+
+    loop {
+        run(&opts);
+
+        if let Some(mins) = opts.repeat_mins {
+            let duration = std::time::Duration::from_secs(mins * 60);
+            println!("waiting {:#?} until next iteration", duration);
+            sleep(duration);
+        } else {
+            break;
+        }
+    }
     Ok(())
 }
