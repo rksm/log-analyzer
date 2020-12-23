@@ -1,0 +1,15 @@
+* HTTP log analyzer
+
+Currently counting [[https://smalltalkzoo.computerhistory.org/logs.html][the page views]] for [[https://smalltalkzoo.computerhistory.org/][smalltalkzoo.computerhistory.org]].
+
+What it will do: Given a set of access.log files ([[https://en.wikipedia.org/wiki/Common_Log_Format][common log]] or combined log format), read each log line up to =--start-date= and count those meeting a requirement (e.g. html GET requests) as views. Safe that inside a json file (that is reused on the next run to not parse everything again) and also render a bar chart to =--by-day-charg=.
+
+** Usage
+#+begin_src shell
+chm-logs \
+      --stats-file temp-stats.json \
+      --by-day-chart stats.svg \
+      --log-dir /var/log/nginx/ \
+      --start-date 2020-12-01 \
+      --repeat 30
+#+end_src
