@@ -41,11 +41,11 @@ pub fn draw_pictures<P: AsRef<Path> + std::fmt::Debug>(path: P, stats: &RequestS
         .set_width(width)
         .set_height(height)
         .set_margins(top, right, bottom, left)
-        .add_title(String::from("smalltalkzoo visitors by day"))
+        .add_title(String::from("smalltalkzoo page views by day"))
         .add_view(&view)
         .add_axis_bottom(&x)
         .add_axis_left(&y)
-        .add_left_axis_label("visitors")
+        .add_left_axis_label("views")
         .save(&path)
         .unwrap();
 

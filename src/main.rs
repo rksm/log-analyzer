@@ -5,8 +5,6 @@ mod stats;
 mod viz;
 
 use std::path::Path;
-
-use chrono::{DateTime, FixedOffset};
 use error::Result;
 use options::{parse_args, Options};
 use parser::{find_log_files, parse_log_files};
@@ -39,16 +37,6 @@ fn read_stats<P: AsRef<Path> + std::fmt::Debug>(path: P) -> RequestStats {
         }
         Ok(stats) => stats,
     }
-}
-
-fn main2() {
-    let opts = parse_args().unwrap();
-    println!("{:#?}", opts);
-
-    let d = chrono::NaiveDate::parse_from_str("2020-12-23", "%Y-%m-%d").unwrap();
-    let dt = d.and_hms(0, 0, 0);
-    let dt = DateTime::<FixedOffset>::from_utc(dt, chrono::FixedOffset::east(0));
-    println!("{:#?}", dt);
 }
 
 fn run(opts: &Options) {

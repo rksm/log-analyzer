@@ -1,0 +1,9 @@
+#+STARTUP: showeverything
+
+* for chm
+deploy:
+#+begin_src shell
+./scripts/chm-sync.sh
+#+end_src
+
+Will build linux executable, rsync to lively-chm, install systemd script
