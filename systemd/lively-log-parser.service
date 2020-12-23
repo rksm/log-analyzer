@@ -1,0 +1,17 @@
+[Unit]
+Description=lively log parser
+After=network.target
+
+[Service]
+Environment=
+Type=simple
+User=lively
+WorkingDirectory=/home/lively/log-parser
+ExecStart=/home/lively/log-parser/scripts/start-on-lively-server.sh
+Restart=on-failure
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=lively-log-parser
+
+[Install]
+WantedBy=multi-user.target
